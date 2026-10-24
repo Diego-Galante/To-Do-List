@@ -8,21 +8,30 @@ router.get('/', async (req, res) => {
     try {
         let checklist = await Checklist.find({});
         // res.status(200).json(checklist);
-        res.status(200).render('checklists/index', { checklist: checklist})
+        res.status(200).render('checklists/index', { checklist: checklist })
     } catch (error) {
-        res.status(500).render('pages/error', { error: 'Erro ao exibir as Listas'})
+        res.status(500).render('pages/error', { error: 'Erro ao exibir as Listas' })
     }
 
 })
 
+router.get('/new', async (req, res) => {
+    try {
+        let checklist = new Checklist();
+        res.status(200).render('checklists/new', { checklist })
+    } catch (error) {
+        res.status(500).render('pages/error', { error: 'Erro ao carregar o formulário' })
+    }
+})
+
 router.post('/', async (req, res) => {
-    let { name } = req.body // pega o name do json e coloca na variavel name
+    let { name } = req.body.checklist
 
     try {
         let checklist = await Checklist.create({ name })
-        res.status(200).json(checklist);
+        res.status(200).render('checklists/new', { checklist: checklist });
     } catch (error) {
-        res.status(400).json(error)
+        res.status(400).render('pages/error', { error: 'Erro a criação de Listas' })
     }
     // console.log(req.body["name"]);
 
@@ -31,9 +40,9 @@ router.post('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         let checklist = await Checklist.findById(req.params.id);
-        res.status(200).render('checklists/show', { checklist: checklist})
+        res.status(200).render('checklists/show', { checklist: checklist })
     } catch (error) {
-        res.status(500).render('pages/error', { error: 'Erro ao exibir as Listas'})
+        res.status(500).render('pages/error', { error: 'Erro ao exibir as Listas' })
     }
 })
 
