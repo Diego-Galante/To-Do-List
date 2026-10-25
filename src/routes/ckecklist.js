@@ -17,10 +17,19 @@ router.get('/', async (req, res) => {
 
 router.get('/new', async (req, res) => {
     try {
-        let checklist = new Checklist();
+        let checklist = await new Checklist();
         res.status(200).render('checklists/new', { checklist })
     } catch (error) {
         res.status(500).render('pages/error', { error: 'Erro ao carregar o formulário' })
+    }
+})
+
+router.get('/:id/edit', async (req, res) => {
+    try {
+        let checklist = await Checklist.findById(req.params.id);
+        res.status(200).render('checklists/edit', { checklist: checklist })
+    } catch (error) {
+        res.status(500).render('pages/error', { error: 'Erro ao carregar a edição de Lista de Tarefas' })
     }
 })
 
@@ -47,13 +56,15 @@ router.get('/:id', async (req, res) => {
 })
 
 router.put('/:id', async (req, res) => {
-    let { name } = req.body
+    let { name } = req.body.checklist
+    let checklist = await Checklist.findById(req.params.id); 
 
     try {
-        let checklist = await Checklist.findByIdAndUpdate(req.params.id, { name }, { new: true });
-        res.status(200).json(checklist);
+        let checklist = await Checklist.findByIdAndUpdate(req.params.id, { name });
+        res.redirect('/checklists')
     } catch (error) {
-        res.status(500).json(error)
+        let errors = error.erros
+        res.status(500).render('checklists/edit', {checklist: {...checklist, errors}})
     }
 })
 
