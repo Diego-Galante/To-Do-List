@@ -18,6 +18,7 @@ app.set('view engine', 'ejs')
 
 app.use('/checklists',checkListRouter);
 app.use('/checklists', taskRouter.checklistDependentRoute);
+app.use('/tasks', taskRouter.simpleRouter);
 app.use('/',rootRouter);
 
 app.listen(3000, () => {
